@@ -1,0 +1,30 @@
+{
+  "routes": [
+    {
+      "origin": "LHR",
+      "destination": "BLR",
+      "months": [10, 11, 12],
+      "year": 2025,
+      "airlines": ["virgin_atlantic", "british_airways"]
+    }
+  ],
+  "notifications": {
+    "email": {
+      "enabled": true,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "username": "",
+      "password": "",
+      "to_addresses": []
+    },
+    "webhook": {
+      "enabled": false,
+      "url": ""
+    }
+  },
+  "tracking": {
+    "interval_minutes": 60,
+    "max_retries": 3,
+    "timeout_seconds": 30
+  }
+}
