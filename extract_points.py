@@ -50,19 +50,14 @@ async def extract_upper_class_points():
         oct_19_points = None
         oct_20_points = None
         
-        # Various regex patterns to find points
+        # More specific patterns that match the actual calendar structure
         patterns = [
-            # Direct patterns for October 19 and 20 with Upper Class
-            r'19.*?(?:Oct|October).*?Upper.*?(\d+(?:,\d{3})*)\s*(?:k|K)?\s*(?:pts|points)',
-            r'20.*?(?:Oct|October).*?Upper.*?(\d+(?:,\d{3})*)\s*(?:k|K)?\s*(?:pts|points)',
-            r'(?:Oct|October).*?19.*?Upper.*?(\d+(?:,\d{3})*)\s*(?:k|K)?\s*(?:pts|points)',
-            r'(?:Oct|October).*?20.*?Upper.*?(\d+(?:,\d{3})*)\s*(?:k|K)?\s*(?:pts|points)',
-            # Reverse patterns
-            r'Upper.*?(?:Oct|October).*?19.*?(\d+(?:,\d{3})*)\s*(?:k|K)?\s*(?:pts|points)',
-            r'Upper.*?(?:Oct|October).*?20.*?(\d+(?:,\d{3})*)\s*(?:k|K)?\s*(?:pts|points)',
-            # Simple number patterns near 19 or 20
-            r'19.*?(\d{2,3})\s*(?:k|K)\s*(?:pts|points)',
-            r'20.*?(\d{2,3})\s*(?:k|K)\s*(?:pts|points)',
+            # Look for "Sun 19" or "Mon 20" followed by Upper Class pricing
+            r'(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+19\s+.*?Upper\s+Class\s+(\d+(?:,\d{3})*)\s*pts',
+            r'(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+20\s+.*?Upper\s+Class\s+(\d+(?:,\d{3})*)\s*pts',
+            # Alternative patterns with different spacing
+            r'19\s+Economy.*?Upper\s+Class\s+(\d+(?:,\d{3})*)\s*pts',
+            r'20\s+Economy.*?Upper\s+Class\s+(\d+(?:,\d{3})*)\s*pts',
         ]
         
         for i, pattern in enumerate(patterns):
@@ -104,9 +99,18 @@ async def extract_upper_class_points():
         except Exception as e:
             print(f"Error searching calendar elements: {e}")
         
-        # Format results
-        oct_19_display = f"{oct_19_points}k pts" if oct_19_points else "Not found"
-        oct_20_display = f"{oct_20_points}k pts" if oct_20_points else "Not found"
+        # Format results - convert raw points to k format
+        if oct_19_points:
+            oct_19_k = int(oct_19_points) // 1000
+            oct_19_display = f"{oct_19_k}k pts"
+        else:
+            oct_19_display = "Not found"
+            
+        if oct_20_points:
+            oct_20_k = int(oct_20_points) // 1000  
+            oct_20_display = f"{oct_20_k}k pts"
+        else:
+            oct_20_display = "Not found"
         
         result = f"Oct 19: {oct_19_display}, Oct 20: {oct_20_display}"
         
